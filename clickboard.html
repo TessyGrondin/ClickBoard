@@ -21,15 +21,15 @@
   </style>
 </head>
 <body>
-<canvas width="375" height="667" id="game"></canvas>
+<canvas width="320" height="480" id="game"></canvas>
 <script>
 const canvas = document.getElementById('game');
 const context = canvas.getContext('2d');
 
-let leftState = 0;
-let rightState = 0;
 let time = 60;
-let borderThickness = 30;
+let x4 = [{pos:7, win:false}, {pos:8, win:false}, {pos:9, win:false}, {pos:10, win:false}, {pos:13, win:false}, {pos:14, win:false}, {pos:15, win:false}, {pos:16, win:false}, {pos:19, win:false}, {pos:20, win:false}, {pos:21, win:false}, {pos:22, win:false}, {pos:25, win:false}, {pos:26, win:false}, {pos:27, win:false}, {pos:28, win:false}];
+let x3 = [{pos:8, win:false}, {pos:9, win:false}, {pos:14, win:false}, {pos:15, win:false}, {pos:20, win:false}, {pos:21, win:false}, {pos:26, win:false}, {pos:27, win:false}];
+let board = [];
 
 let end = false;
 let menu = true;
@@ -39,13 +39,21 @@ assetsImage.src = "assets.png"
 let backgroundImage = new Image();
 backgroundImage.src = "background.png"
 
-function random(min, max) {
-  return Math.random() * (max - min) + min;
-}
-
 let mousedown = false;
 
 let score = 0;
+
+let x = (canvas.width - 32 * 6) / 2;
+let y = (canvas.height - 32 * 6) / 2;
+
+for (let i = 0; i < 6; i++) {
+  for (let j = 0; j < 6; j++) {
+    board.push({x:x, y:y, value:0, activ:true, clicked:false, win:false});
+    x += 32;
+  }
+  x = (canvas.width - 32 * 6) / 2;
+  y += 32;
+}
 
 context.fillStyle = 'yellow';
 
@@ -60,6 +68,11 @@ function loop() {
   requestAnimationFrame(loop);
   context.clearRect(0,0,canvas.width,canvas.height);
   context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
+
+  board.forEach(function(tile){
+    context.drawImage(assetsImage, 640, 0, 64, 64, tile.x, tile.y, 32, 32);
+    context.drawImage(assetsImage, tile.value * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+  });
 
   // if (menu) {
   //   context.drawImage(background, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
