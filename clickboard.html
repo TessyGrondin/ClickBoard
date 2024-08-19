@@ -27,8 +27,8 @@ const canvas = document.getElementById('game');
 const context = canvas.getContext('2d');
 
 let time = 60;
-let x4 = [{pos:7, win:false}, {pos:8, win:false}, {pos:9, win:false}, {pos:10, win:false}, {pos:13, win:false}, {pos:14, win:false}, {pos:15, win:false}, {pos:16, win:false}, {pos:19, win:false}, {pos:20, win:false}, {pos:21, win:false}, {pos:22, win:false}, {pos:25, win:false}, {pos:26, win:false}, {pos:27, win:false}, {pos:28, win:false}];
-let x3 = [{pos:8, win:false}, {pos:9, win:false}, {pos:14, win:false}, {pos:15, win:false}, {pos:20, win:false}, {pos:21, win:false}, {pos:26, win:false}, {pos:27, win:false}];
+let x4 = [{pos:7, win:false, value:0}, {pos:8, win:false, value:0}, {pos:9, win:false, value:0}, {pos:10, win:false, value:0}, {pos:13, win:false, value:0}, {pos:14, win:false, value:0}, {pos:15, win:false, value:0}, {pos:16, win:false, value:0}, {pos:19, win:false, value:0}, {pos:20, win:false, value:0}, {pos:21, win:false, value:0}, {pos:22, win:false, value:0}, {pos:25, win:false, value:0}, {pos:26, win:false, value:0}, {pos:27, win:false, value:0}, {pos:28, win:false, value:0}];
+let x3 = [{pos:8, win:false, value:0}, {pos:9, win:false, value:0}, {pos:14, win:false, value:0}, {pos:15, win:false, value:0}, {pos:20, win:false, value:0}, {pos:21, win:false, value:0}, {pos:26, win:false, value:0}, {pos:27, win:false, value:0}];
 let board = [];
 
 let end = false;
@@ -57,21 +57,69 @@ for (let i = 0; i < 6; i++) {
 
 context.fillStyle = 'yellow';
 
+function choseWin(length) {
+  let w1 = Math.floor(Math.random() * length);
+  let w2 = Math.floor(Math.random() * length);
+  let w3 = Math.floor(Math.random() * length);
+  let w4 = Math.floor(Math.random() * length);
+  let w5 = Math.floor(Math.random() * length);
+
+  while (w2 == w1)
+    w2 = Math.floor(Math.random() * length);
+  while (w3 == w1 || w3 == w2)
+    w3 = Math.floor(Math.random() * length);
+  while (w4 == w1 || w4 == w2 || w4 == w3)
+    w4 = Math.floor(Math.random() * length);
+  while (w5 == w1 || w5 == w2 || w5 == w3 || w5 == w4)
+    w5 = Math.floor(Math.random() * length);
+  if (length < x4.length) {
+    x3[w1].win = true;
+    x3[w2].win = true;
+  } else if (length < board.length) {
+    x4[w1].win = true;
+    x4[w2].win = true;
+    x4[w3].win = true;
+    x4[w4].win = true;
+  } else {
+    board[w1].win = true;
+    board[w2].win = true;
+    board[w3].win = true;
+    board[w4].win = true;
+    board[w5].win = true;
+  }
+}
+
 function makeBoard() {
   let type = Math.floor(Math.random() * 3);
+
+  x3.forEach(function(n) {
+    n.win = false;
+    n.value = 0;
+  });
+  x4.forEach(function(n) {
+    n.win = false;
+    n.value = 0;
+  });
   if (type != 2) {
     board.forEach(function(tile){
       tile.activ = false;
+      tile.value = 0;
     });
   }
   if (type == 1) {
+    choseWin(x4.length);
     x4.forEach(function(n) {
       board[n.pos].activ = true;
-    })
+      board[n.pos].win = n.win;
+    });
   } else if (type == 0) {
+    choseWin(x3.length);
     x3.forEach(function(n) {
       board[n.pos].activ = true;
-    })
+      board[n.pos].win = n.win;
+    });
+  } else {
+    choseWin(board.length);
   }
 }
 
@@ -85,7 +133,10 @@ function loop() {
   board.forEach(function(tile){
     if (tile.activ) {
       context.drawImage(assetsImage, 640, 0, 64, 64, tile.x, tile.y, 32, 32);
-      context.drawImage(assetsImage, tile.value * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+      if (!tile.win)
+        context.drawImage(assetsImage, tile.value * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+      else
+        context.drawImage(assetsImage, (tile.value + 1) * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
       if (tile.clicked && tile.win)
         context.drawImage(assetsImage, 11 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
       if (tile.clicked && !tile.win)
