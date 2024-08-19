@@ -43,6 +43,8 @@ let mousedown = false;
 
 let score = 0;
 
+let nbPattern = 10;
+
 let x = (canvas.width - 32 * 6) / 2;
 let y = (canvas.height - 32 * 6) / 2;
 
@@ -57,6 +59,24 @@ for (let i = 0; i < 6; i++) {
 
 context.fillStyle = 'yellow';
 
+function chosePattern(length) {
+  let p1 = Math.floor(Math.random() * nbPattern);
+  let p2 = Math.floor(Math.random() * nbPattern);
+
+  document.write(" p1 " + p1);
+  while (p2 == p1)
+    p2 = Math.floor(Math.random() * nbPattern);
+  document.write(" p2 " + p2);
+  if (length < x4.length) {
+    x3.forEach(function(ref) {
+      if (ref.win)
+        ref.value = p1;
+      else
+        ref.value = p2;
+    });
+  }
+}
+
 function choseWin(length) {
   let w1 = Math.floor(Math.random() * length);
   let w2 = Math.floor(Math.random() * length);
@@ -64,8 +84,10 @@ function choseWin(length) {
   let w4 = Math.floor(Math.random() * length);
   let w5 = Math.floor(Math.random() * length);
 
+  document.write(" w1 " + w1);
   while (w2 == w1)
     w2 = Math.floor(Math.random() * length);
+  document.write(" w2 " + w2);
   while (w3 == w1 || w3 == w2)
     w3 = Math.floor(Math.random() * length);
   while (w4 == w1 || w4 == w2 || w4 == w3)
@@ -90,7 +112,7 @@ function choseWin(length) {
 }
 
 function makeBoard() {
-  let type = Math.floor(Math.random() * 3);
+  let type = 0;//Math.floor(Math.random() * 3);
 
   x3.forEach(function(n) {
     n.win = false;
@@ -114,9 +136,11 @@ function makeBoard() {
     });
   } else if (type == 0) {
     choseWin(x3.length);
+    chosePattern(x3.length);
     x3.forEach(function(n) {
       board[n.pos].activ = true;
       board[n.pos].win = n.win;
+      board[n.pos].value = n.value;
     });
   } else {
     choseWin(board.length);
@@ -133,10 +157,7 @@ function loop() {
   board.forEach(function(tile){
     if (tile.activ) {
       context.drawImage(assetsImage, 640, 0, 64, 64, tile.x, tile.y, 32, 32);
-      if (!tile.win)
-        context.drawImage(assetsImage, tile.value * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
-      else
-        context.drawImage(assetsImage, (tile.value + 1) * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+      context.drawImage(assetsImage, tile.value * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
       if (tile.clicked && tile.win)
         context.drawImage(assetsImage, 11 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
       if (tile.clicked && !tile.win)
