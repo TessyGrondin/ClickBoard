@@ -103,6 +103,41 @@ function chosePattern(length) {
         }
       });
     }
+  } else {
+    let nb1 = 15;
+    if (div == 0) {
+      board.forEach(function(ref) {
+        if (ref.win)
+          ref.value = p1;
+        else {
+          let choice = Math.floor(Math.random() * 2);
+          if (choice == 0 && nb1 > 0) {
+            ref.value = p2;
+            nb1--;
+          } else
+            ref.value = p3;
+        }
+      });
+    } else {
+      let nb2 = 2;
+      board.forEach(function(ref) {
+        if (ref.win) {
+            let choice = Math.floor(Math.random() * 2);
+            if (choice == 0 && nb2 > 0) {
+              ref.value = p1;
+              nb2--;
+            } else
+              ref.value = p4;
+        } else {
+            let choice = Math.floor(Math.random() * 2);
+            if (choice == 0 && nb1 > 0) {
+              ref.value = p2;
+              nb1--;
+            } else
+              ref.value = p3;
+        }
+      });
+    }
   }
 }
 
@@ -139,7 +174,7 @@ function choseWin(length) {
 }
 
 function makeBoard() {
-  let type = 1;//Math.floor(Math.random() * 3);
+  let type = 2;//Math.floor(Math.random() * 3);
 
   x3.forEach(function(n) {
     n.win = false;
@@ -173,6 +208,7 @@ function makeBoard() {
     });
   } else {
     choseWin(board.length);
+    chosePattern(board.length);
   }
 }
 
