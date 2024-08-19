@@ -72,7 +72,13 @@ function loop() {
   board.forEach(function(tile){
     context.drawImage(assetsImage, 640, 0, 64, 64, tile.x, tile.y, 32, 32);
     context.drawImage(assetsImage, tile.value * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+    if (tile.clicked && tile.win)
+      context.drawImage(assetsImage, 11 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+    if (tile.clicked && !tile.win)
+      context.drawImage(assetsImage, 12 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
   });
+  if (score < 0)
+    score = 0;
 
   // if (menu) {
   //   context.drawImage(background, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
@@ -205,24 +211,20 @@ function addObstacle() {
 //   rightState = 0;
 // });
 
-// document.addEventListener('mousedown', function(e) {
-//   let relativeX = e.x - canvas.offsetLeft;
-//   let relativeY = e.y - canvas.offsetTop;
+document.addEventListener('click', function(e) {
+  let relativeX = e.x - canvas.offsetLeft;
+  let relativeY = e.y - canvas.offsetTop;
 
-//   mousedown = true;
-//   if (relativeY <= canvas.height - 70 || relativeY >= canvas.height - 6 || end)
-//     return;
-//   if (relativeX >= 30 && relativeX <= 94) {
-//     leftState = 1;
-//     playerDir = -1;
-//     player.dx = -2;
-//   } else if (relativeX >= canvas.width - 94 && relativeX <= canvas.width - 20) {
-//     leftState = 0;
-//     rightState = 1;
-//     playerDir = 1;
-//     player.dx = 2;
-//   }
-// });
+  board.forEach(function(boardtile) {
+    if (!boardtile.activ || relativeX < boardtile.x || relativeX > boardtile.x + 32 || relativeY < boardtile.y || relativeY > boardtile.y + 32)
+      return;
+    if (!boardtile.clicked && boardtile.win)
+      score += 100;
+    else
+      score -= 50;
+    boardtile.clicked = true;
+  });
+ });
 
 // document.addEventListener('click', function(e) {
 //   if (end) {
