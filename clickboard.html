@@ -184,12 +184,12 @@ function makeBoard() {
     n.win = false;
     n.value = 0;
   });
-  if (type != 2) {
-    board.forEach(function(tile){
-      tile.activ = false;
-      tile.value = 0;
-    });
-  }
+  board.forEach(function(tile){
+    tile.activ = false;
+    tile.value = 0;
+    tile.clicked = false;
+    tile.win = false;
+  });
   if (type == 1) {
     choseWin(x4.length);
     chosePattern(x4.length);
@@ -209,6 +209,9 @@ function makeBoard() {
   } else {
     choseWin(board.length);
     chosePattern(board.length);
+    board.forEach(function(tile){
+      tile.activ = true;
+    });
   }
 }
 
@@ -219,7 +222,10 @@ function loop() {
   context.clearRect(0,0,canvas.width,canvas.height);
   context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
 
-  board.forEach(function(tile){
+  let i = 0;
+  board.forEach(function(tile) {
+    if ((tile.clicked && tile.win) || !tile.win)
+      i++;
     if (tile.activ) {
       context.drawImage(assetsImage, 640, 0, 64, 64, tile.x, tile.y, 32, 32);
       context.drawImage(assetsImage, tile.value * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
@@ -229,8 +235,14 @@ function loop() {
         context.drawImage(assetsImage, 12 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
     }
   });
+  if (i == board.length) {
+    score += 300;
+    makeBoard();
+  }
   if (score < 0)
     score = 0;
+  context.font = "30px Arial";
+  context.fillText(score, canvas.width - (score.toString().length + 1) * 20, 40);
 
   // if (menu) {
   //   context.drawImage(background, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
