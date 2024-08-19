@@ -57,12 +57,25 @@ for (let i = 0; i < 6; i++) {
 
 context.fillStyle = 'yellow';
 
-// function display() {
-//   player.currentFrame += 1;
-//   if (player.currentFrame >= player.nbFrames)
-//     player.currentFrame = 0;
-//   canvas.clearRect(0, 0, canvas.width, canvas.height);
-// }
+function makeBoard() {
+  let type = Math.floor(Math.random() * 3);
+  if (type != 2) {
+    board.forEach(function(tile){
+      tile.activ = false;
+    });
+  }
+  if (type == 1) {
+    x4.forEach(function(n) {
+      board[n.pos].activ = true;
+    })
+  } else if (type == 0) {
+    x3.forEach(function(n) {
+      board[n.pos].activ = true;
+    })
+  }
+}
+
+makeBoard();
 
 function loop() {
   requestAnimationFrame(loop);
@@ -70,12 +83,14 @@ function loop() {
   context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
 
   board.forEach(function(tile){
-    context.drawImage(assetsImage, 640, 0, 64, 64, tile.x, tile.y, 32, 32);
-    context.drawImage(assetsImage, tile.value * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
-    if (tile.clicked && tile.win)
-      context.drawImage(assetsImage, 11 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
-    if (tile.clicked && !tile.win)
-      context.drawImage(assetsImage, 12 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+    if (tile.activ) {
+      context.drawImage(assetsImage, 640, 0, 64, 64, tile.x, tile.y, 32, 32);
+      context.drawImage(assetsImage, tile.value * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+      if (tile.clicked && tile.win)
+        context.drawImage(assetsImage, 11 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+      if (tile.clicked && !tile.win)
+        context.drawImage(assetsImage, 12 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+    }
   });
   if (score < 0)
     score = 0;
