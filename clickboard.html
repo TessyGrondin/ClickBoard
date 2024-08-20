@@ -275,6 +275,7 @@ function loop() {
     score = 0;
   context.font = "30px Arial";
   context.fillText(score, canvas.width - (score.toString().length + 1) * 20, 40);
+  context.fillText("Time left : " + time, 10, 40)
   context.font = "20px Arial";
   context.fillText(texts[textChose], 80, 120);
   let px = 80 + (texts[textChose].toString().length + 1) * 7;
@@ -394,20 +395,12 @@ function initialize() {
   }
 }
 
-function addObstacle() {
-  if (!end && !menu) {
-    obstacles.push({
-      x: random(55, canvas.width - 55 - diamondWidth),
-      y: canvas.height,
-    })
-  }
+function decrement() {
+  if (!end && !menu)
+    time--;
 }
 
-// setInterval(display, 120);
-// setInterval(decrement, 1000);
-// setInterval(backgroundMove, 10);
-// setInterval(addElement, 500);
-// setInterval(addObstacle, 2000);
+setInterval(decrement, 1000);
 
 // document.addEventListener('mouseup', function(e) {
 //   mousedown = false;
