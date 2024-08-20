@@ -300,31 +300,6 @@ function loop() {
   }
 }
 
-function initialize() {
-  leftState = 0
-  rightState = 0
-  time = 60
-  minDiamondSpace = 15;
-  maxDiamondSpace = 20;
-  player.x = canvas.width / 2 - 32;
-  player.y = 74;
-  obstacles = [{x: random(55, canvas.width - 55 - diamondWidth), y:canvas.height}]
-  diamonds = [{ x: canvas.width / 2 - diamondWidth / 2, y: diamondStart,  activ: true}]
-  let y = diamondStart;
-  while (y < canvas.height - diamondHeight) {
-    y += diamondHeight + random(minDiamondSpace, maxDiamondSpace);
-    let x;
-    do {
-      x = random(55, canvas.width - 55 - diamondWidth);
-    } while (
-      y < canvas.height &&
-      x > canvas.width / 2 - diamondWidth * 1.5 &&
-      x < canvas.width / 2 + diamondWidth / 2
-    );
-    diamonds.push({ x, y });
-  }
-}
-
 function decrement() {
   if (!end && !menu)
     time--;
